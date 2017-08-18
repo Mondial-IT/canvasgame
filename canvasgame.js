@@ -52,9 +52,14 @@ class Renderer {
             let x = event.pageX - _this.canvas.offsetLeft;
             let y = event.pageY - _this.canvas.offsetTop;
 
-            // Get object at click location
-            _this.clickAll(x, y);
-            _this.drawAll();
+            // Add displacement vector to player location.
+            // Displacement vector is distance between click location and middle of the screen.
+            player.x += x - canvasWidth/2;
+            player.y += y - canvasHeight/2;
+
+            // Reset player velocity
+            player.velocity.x = 0;
+            player.velocity.y = 0;
         });
 
         // Hover event
@@ -65,13 +70,12 @@ class Renderer {
             }
         });
 
-        // Arrowkeys event
+        // Key event
         document.addEventListener("keydown", function (event) {
-            if (event.keyCode === "37") _this.keyPressAll('left');
-            if (event.keyCode === "38") _this.keyPressAll('up');
-            if (event.keyCode === "39") _this.keyPressAll('right');
-            if (event.keyCode === "40") _this.keyPressAll('down');
-            _this.drawAll();
+            if (event.keyCode === 37) _this.keyPressAll('left');
+            if (event.keyCode === 38) _this.keyPressAll('up');
+            if (event.keyCode === 39) _this.keyPressAll('right');
+            if (event.keyCode === 40) _this.keyPressAll('down');
         });
 
         // Voeg canvas aan html toe
@@ -89,8 +93,8 @@ class Renderer {
         // Redraw canvas
         for (let i = 0; i < this.canvasObjects.length; i++) {
             this.canvasObjects[i].draw(this.ctx, {
-                x: (canvasWidth / 2) - this.player.x, // offset = middle of screen - player pos
-                y: (canvasHeight / 2) - this.player.y
+                x: (canvasWidth / 2) - player.x, // offset = middle of screen - player pos
+                y: (canvasHeight / 2) - player.y
             });
         }
         this.player.draw(this.ctx);
@@ -106,24 +110,13 @@ class Renderer {
             this.ctx.strokestyle = "blue";
             this.ctx.fillStyle = "blue";
             this.ctx.fillRect(
-                (canvasWidth / 2) - this.player.x + this.hitboxMeshes[i].x,
-                (canvasHeight / 2) - this.player.y + this.hitboxMeshes[i].y,
+                (canvasWidth / 2) - player.x + hitboxMeshes[i].x,
+                (canvasHeight / 2) - player.y + hitboxMeshes[i].y,
                 1, 1
             );
             this.ctx.stroke();
         }
         this.player.draw(this.ctx);
-    }
-
-    /**
-     * For every canvasObjects: check if object is at location; if yes then click
-     */
-    clickAll(x, y) {
-        for (let i = 0; i < this.canvasObjects.length; i++) {
-            if (this.canvasObjects[i].isAtPos(x, y)) {
-                this.canvasObjects[i].click(x, y);
-            }
-        }
     }
 
     /**
@@ -136,7 +129,7 @@ class Renderer {
     }
 
     async simulationLoop() {
-        document.getElementById("framecounter").innerText = this.frameCount;
+        document.getElementById("framecounter").innerText = String(this.frameCount);
         this.frameCount++;
 
         this.doPhysicsAll();

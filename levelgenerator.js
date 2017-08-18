@@ -78,14 +78,14 @@ class Button extends CanvasObject {
         let mesh = [];
 
         // Upper horizontal
-        for (let i = 0; i < this.width; i+=20) {
+        for (let i = 0; i < this.width; i += 20) {
             mesh.push({
                 x: this.x + i,
                 y: this.y
             });
         }
         // Right vertical
-        for (let j = 0; j < this.height; j+=20) {
+        for (let j = 0; j < this.height; j += 20) {
             mesh.push({
                 x: this.x + this.width,
                 y: this.y + j
@@ -93,7 +93,7 @@ class Button extends CanvasObject {
         }
 
         // Lower horizontal
-        for (let i = this.width; i > 0; i-=20) {
+        for (let i = this.width; i > 0; i -= 20) {
             mesh.push({
                 x: this.x + i,
                 y: this.y + this.height
@@ -101,7 +101,7 @@ class Button extends CanvasObject {
         }
 
         // Left vertical
-        for (let j = this.height; j > 0; j-=20) {
+        for (let j = this.height; j > 0; j -= 20) {
             mesh.push({
                 x: this.x,
                 y: this.y + j
@@ -118,6 +118,7 @@ class Circle extends CanvasObject {
         this.x = 300;
         this.y = 300;
         this.r = 50;
+        this.rDefault = 50;
         this.velocity = {
             x: 0,
             y: 0,
@@ -126,13 +127,20 @@ class Circle extends CanvasObject {
         };
         this.acceleration = 1;
         this.hasCollision = false;
+
+        document.addEventListener("keydown", function (event) {
+            if (event.keyCode === 81) player.r = 10;
+        });
+        document.addEventListener("keyup", function (event) {
+            if (event.keyCode === 81) player.r = player.rDefault;
+        });
     }
 
     draw(ctx) {
         ctx.beginPath();
         ctx.fillStyle = "rgba(255, 255, 255, 0)";
-        ctx.arc(750, 250, 50, 0, 2 * Math.PI);
-        if(this.hasCollision){
+        ctx.arc(750, 250, this.r, 0, 2 * Math.PI);
+        if (this.hasCollision) {
             ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
             ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
         }
