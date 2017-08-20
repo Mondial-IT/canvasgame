@@ -6,13 +6,6 @@ class CanvasObject {
     draw(ctx, offset) {
     }
 
-    keyPress(key) {
-    }
-
-    isAtPos() {
-        return false
-    }
-
     doPhysics() {
     }
 
@@ -210,12 +203,24 @@ class Circle extends CanvasObject {
 
 }
 
-// Put output in an object so that e.g. scenery does not exist globally (prevent accidents)
-levelgeneratorOutput = {};
-levelgeneratorOutput.scenery = [new Line(), new Box(), new Button()];
-levelgeneratorOutput.player = new Circle();
+/**
+ * Instantiates all classes in this file.
+ * Returns an object with:
+ * scenery: an array of scenery objects,
+ * player: the player
+ * hitboxes: an array of scenery hitbox coordinates
+ */
+function generateLevel() {
+    let scenery = [new Line(), new Box(), new Button()];
 
-levelgeneratorOutput.hitboxes = [];
-for (let i = 0; i < levelgeneratorOutput.scenery.length; i++) {
-    levelgeneratorOutput.hitboxes = levelgeneratorOutput.hitboxes.concat(levelgeneratorOutput.scenery[i].getMesh());
+    let hitboxes = [];
+    for (let i = 0; i < scenery.length; i++) {
+        hitboxes = hitboxes.concat(scenery[i].getMesh());
+    }
+
+    return {
+        scenery: scenery,
+        player: new Circle(),
+        hitboxes: hitboxes
+    };
 }

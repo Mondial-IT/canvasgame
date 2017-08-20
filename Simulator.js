@@ -17,7 +17,7 @@ class Simulator {
     constructor(renderer, player, scenery, hitboxes) {
         this.frameCount = 0;
         this.renderer = renderer;
-        this.renderer.simulator = this;
+        this.renderer.simulator = this; // Give renderer this (Simulator instance)
         this.player = player;
         this.scenery = scenery;
         this.hitboxes = hitboxes;
