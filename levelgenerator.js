@@ -146,8 +146,10 @@ class Circle extends CanvasObject {
         }
         ctx.stroke();
         ctx.fill();
-        ctx.strokeStyle = "black"; // terugzetten
-        ctx.fillStyle = "rgba(255, 255, 255, 0)"; // terugzetten
+
+        // Restore
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "rgba(255, 255, 255, 0)";
 
         // If mouse is on canvas (no init values)
         if (mouseHoverLocation.x !== 0 && mouseHoverLocation.y !== 0) {
