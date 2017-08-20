@@ -128,11 +128,12 @@ class Circle extends CanvasObject {
         this.acceleration = 1;
         this.hasCollision = false;
 
+        let _this = this; // Bring this into document.addEventListener() scope
         document.addEventListener("keydown", function (event) {
-            if (event.keyCode === 81) player.r = 10;
+            if (event.keyCode === 81) _this.r = 10;
         });
         document.addEventListener("keyup", function (event) {
-            if (event.keyCode === 81) player.r = player.rDefault;
+            if (event.keyCode === 81) _this.r = _this.rDefault;
         });
     }
 
@@ -209,5 +210,12 @@ class Circle extends CanvasObject {
 
 }
 
-levelGeneratorOutput = [new Line(), new Box(), new Button()];
-player = new Circle();
+// Put output in an object so that e.g. scenery does not exist globally (prevent accidents)
+levelgeneratorOutput = {};
+levelgeneratorOutput.scenery = [new Line(), new Box(), new Button()];
+levelgeneratorOutput.player = new Circle();
+
+levelgeneratorOutput.hitboxes = [];
+for (let i = 0; i < levelgeneratorOutput.scenery.length; i++) {
+    levelgeneratorOutput.hitboxes = levelgeneratorOutput.hitboxes.concat(levelgeneratorOutput.scenery[i].getMesh());
+}
