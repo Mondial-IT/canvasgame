@@ -1,12 +1,28 @@
+idCounter = 0;
+
 /**
  * Baseclass for all static objects on the canvas.
+ * Gives every object an id.
  */
 class CanvasObject {
-    // Draw on ctx (canvas context) by adding offset to your point: 0,0 = offset.x + 0, offset.y + 0
-    draw(ctx, offset) {
+    constructor(){
+        this.id = idCounter;
+        idCounter++;
+    }
+}
+
+/**
+ * Scenery are stationary objects on the level.
+ * Scenery does not do physics themselves, only drawing.
+ */
+class Scenery extends CanvasObject {
+
+    constructor() {
+        super();
     }
 
-    doPhysics() {
+    // Draw on ctx (canvas context) by adding offset to your point: 0,0 = offset.x + 0, offset.y + 0
+    draw(ctx, offset) {
     }
 
     /**
@@ -17,7 +33,7 @@ class CanvasObject {
     }
 }
 
-class Line extends CanvasObject {
+class Line extends Scenery {
 
     draw(ctx, offset) {
         ctx.beginPath();
@@ -27,7 +43,7 @@ class Line extends CanvasObject {
     }
 }
 
-class Box extends CanvasObject {
+class Box extends Scenery {
     draw(ctx, offset) {
         ctx.beginPath();
         ctx.moveTo(offset.x + 100, offset.y + 100);
@@ -39,7 +55,7 @@ class Box extends CanvasObject {
     }
 }
 
-class Button extends CanvasObject {
+class Button extends Scenery {
 
     constructor() {
         super();
@@ -104,7 +120,11 @@ class Button extends CanvasObject {
     }
 }
 
-
+/**
+ * The player.
+ * Can move around and do stuff.
+ * Is the core place where physics originates from.
+ */
 class Circle extends CanvasObject {
     constructor() {
         super();

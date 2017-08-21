@@ -9,6 +9,9 @@ function main() {
 
 canvasWidth = 1500;
 canvasHeight = 500;
+targetFrameRate = 60;
+targetFrameTime = 1000 / targetFrameRate;
+document.getElementById("targetframetime").innerText = String(targetFrameTime);
 main();
 
 

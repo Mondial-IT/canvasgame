@@ -7,43 +7,62 @@ function sleep(ms) {
  * Registers canvasObjects which are all drawn with drawAll()
  */
 class Simulator {
-
-    /**
-     * Initializes:
-     *        Canvas and canvas context
-     *        canvasObjects array
-     *        click eventListener and its callback
-     */
     constructor(renderer, player, scenery, hitboxes) {
-        this.frameCount = 0;
+        this.physicsFrameCount = 0;
         this.renderer = renderer;
         this.renderer.simulator = this; // Give renderer this (Simulator instance)
         this.player = player;
         this.scenery = scenery;
         this.hitboxes = hitboxes;
+        this.prevFrameDateTime = new Date().getTime();
+        this.startTime = new Date().getTime();
     }
 
     async simulationLoop() {
-        this.frameCount++;
+        this.doPhysics();
+        let physicsTime = new Date().getTime() - this.prevFrameDateTime;
 
-        this.doPhysicsAll();
+        // If physics didnt take up all the time
+        if(new Date().getTime() - this.prevFrameDateTime <= targetFrameTime){
+            this.requestDraw();
+        } else {
+            console.log("No time to draw ", new Date().getTime() - this.prevFrameDateTime, targetFrameTime);
+        }
+        let renderingTime = new Date().getTime() - this.prevFrameDateTime - physicsTime;
+        let totalUsedTime = new Date().getTime() - this.prevFrameDateTime;
 
-        this.player.checkCollision(this.hitboxes);
+        // If there is time left over: wait
+        let sleepTime = 0;
+        if(totalUsedTime < targetFrameTime){
+            sleepTime = targetFrameTime - totalUsedTime;
+            await sleep(sleepTime);
+        } else {
+            console.log("No time to wait");
+            // Error: frameTime > targetFrameTime
+        }
 
-        this.renderer.draw();
-
-        await sleep(1000 / 60);
+        let totalTime = new Date().getTime() - this.prevFrameDateTime;
+        document.getElementById("framecounter").innerText = String(this.physicsFrameCount);
+        document.getElementById("frametime").innerText = String(totalTime);
+        document.getElementById("frametimephysics").innerText = String(physicsTime);
+        document.getElementById("frametimerendering").innerText = String(renderingTime);
+        document.getElementById("frametimewaited").innerText = String(sleepTime);
+        this.prevFrameDateTime = new Date().getTime();
+        this.physicsFrameCount++;
         this.simulationLoop();
     }
 
-    doPhysicsAll() {
-        this.player.doPhysics();
-        for (let i = 0; i < this.scenery.length; i++) {
-            this.scenery[i].doPhysics({
-                x: this.player.x,
-                y: this.player.y
-            });
+    requestDraw(){
+        if (document.getElementById("displayType").checked) {
+            this.renderer.drawHitboxes(this.player, this.hitboxes);
+        } else {
+            this.renderer.draw(this.player, this.scenery);
         }
+    }
+
+    doPhysics(){
+        this.player.doPhysics();
+        this.player.checkCollision(this.hitboxes);
     }
 
 }

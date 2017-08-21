@@ -4,7 +4,7 @@ let mouseHoverLocation = {
 };
 
 /**
- * Handles purely rendering of objects into the canvas.
+ * Handles rendering of objects into the canvas.
  * Gets information/data about what to draw from simulator.
  */
 class Renderer {
@@ -57,44 +57,48 @@ class Renderer {
         $('#canvas-container').append(this.canvas);
     }
 
+    incrementFrameCount(){
+        document.getElementById("framecounter").innerText = String(this.frameCount);
+        this.frameCount++;
+    }
+
+    wipeCanvas(){
+        this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
+
     /**
      * Call draw() on every canvasObject
      */
-    draw() {
-        // Increment frame count
-        document.getElementById("framecounter").innerText = String(this.frameCount);
-        this.frameCount++;
+    draw(player, scenery) {
+        //this.incrementFrameCount();
+        this.wipeCanvas();
 
-        // Wipe canvas
-        this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-        // Draw normal or hitboxes
-        if (document.getElementById("displayType").checked) {
-
-            // Draw hitboxes
-            for (let i = 0; i < this.simulator.hitboxes.length; i++) {
-                this.ctx.beginPath();
-                this.ctx.strokestyle = "blue";
-                this.ctx.fillStyle = "blue";
-                this.ctx.fillRect(
-                    (canvasWidth / 2) - this.simulator.player.x + this.simulator.hitboxes[i].x,
-                    (canvasHeight / 2) - this.simulator.player.y + this.simulator.hitboxes[i].y,
-                    1, 1
-                );
-                this.ctx.stroke();
-            }
-            this.simulator.player.draw(this.ctx);
-
-        } else {
-
-            // Draw normal
-            for (let i = 0; i < this.simulator.scenery.length; i++) {
-                this.simulator.scenery[i].draw(this.ctx, {
-                    x: (canvasWidth / 2) - this.simulator.player.x, // offset = middle of screen - player pos
-                    y: (canvasHeight / 2) - this.simulator.player.y
-                });
-            }
-            this.simulator.player.draw(this.ctx);
+        // Draw normal
+        for (let i = 0; i < scenery.length; i++) {
+            scenery[i].draw(this.ctx, {
+                x: (canvasWidth / 2) - player.x, // offset = middle of screen - player pos
+                y: (canvasHeight / 2) - player.y
+            });
         }
+        player.draw(this.ctx);
+
+    }
+
+    drawHitboxes(player, hitboxes){
+        this.incrementFrameCount();
+        this.wipeCanvas();
+
+        for (let i = 0; i < hitboxes.length; i++) {
+            this.ctx.beginPath();
+            this.ctx.strokestyle = "blue";
+            this.ctx.fillStyle = "blue";
+            this.ctx.fillRect(
+                (canvasWidth / 2) - player.x + hitboxes[i].x,
+                (canvasHeight / 2) - player.y + hitboxes[i].y,
+                1, 1
+            );
+            this.ctx.stroke();
+        }
+        player.draw(this.ctx);
     }
 }
