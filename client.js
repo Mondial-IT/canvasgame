@@ -12,6 +12,13 @@ canvasHeight = 500;
 targetFrameRate = 60;
 targetFrameTime = 1000 / targetFrameRate;
 document.getElementById("targetframetime").innerText = String(targetFrameTime);
+
+// Prevent scrolling with space
+window.addEventListener('keydown', function(e) {
+    if(e.keyCode === 32) {
+        e.preventDefault();
+    }
+});
 main();
 
 

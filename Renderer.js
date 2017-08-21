@@ -101,4 +101,22 @@ class Renderer {
         }
         player.draw(this.ctx);
     }
+
+    /**
+     * Writes frame stats onto html.
+     * @param physicsTime
+     * @param renderingTime
+     * @param sleepTime
+     * @param totalTime
+     * @param physicsFrameCount
+     * @param timeShortageSum
+     */
+    displayStats(physicsTime, renderingTime, sleepTime, totalTime, physicsFrameCount, timeShortageSum){
+        document.getElementById("frametimephysics").innerText = String(physicsTime);
+        document.getElementById("frametimerendering").innerText = String(renderingTime);
+        document.getElementById("frametimewaited").innerText = String(sleepTime);
+        document.getElementById("frametime").innerText = String(totalTime);
+        document.getElementById("framecounter").innerText = String(physicsFrameCount);
+        document.getElementById("timeshortage").innerText = String(timeShortageSum);
+    }
 }

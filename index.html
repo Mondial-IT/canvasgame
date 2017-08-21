@@ -14,62 +14,67 @@
     </div>
     <div class="ui-content" role="main">
 
-        <div id="canvas-container" style="cursor: default">
-            <table>
-                <tr>
-                    <td>Frame count:</td>
-                    <td>
-                        <div id="framecounter">0</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top">
-                        Frame time (ms):
-                    </td>
-                    <td>
-                        <table style="border: 1px solid black">
-                            <tr>
-                                <td>Physics</td>
-                                <td>
-                                    <div id="frametimephysics">0</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Rendering</td>
-                                <td>
-                                    <div id="frametimerendering">0</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Waiting</td>
-                                <td>
-                                    <div id="frametimewaited">0</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total</td>
-                                <td style="border-top: 1px solid black">
-                                    <div id="frametime">0</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Target</td>
-                                <td>
-                                    <div id="targetframetime">0</div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Player coordinates:</td>
-                    <td><div id="player"></div></td>
-                </tr>
-            </table>
-            <label>
-                Display hitbox mesh<input type="checkbox" id="displayType">
-            </label>
-        </div>
+        <div id="canvas-container" style="cursor: default"></div>
+        <table>
+            <tr>
+                <td>Frame count:</td>
+                <td>
+                    <div id="framecounter">0</div>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">
+                    Frame time (ms):
+                </td>
+                <td>
+                    <table style="border: 1px solid black">
+                        <tr>
+                            <td>Physics</td>
+                            <td>
+                                <div id="frametimephysics">0</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Rendering</td>
+                            <td>
+                                <div id="frametimerendering">0</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Waiting</td>
+                            <td>
+                                <div id="frametimewaited">0</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td style="border-top: 1px solid black">
+                                <div id="frametime">0</div>
+                            </td>
+                        </tr>
+                        <tr style="color: gray">
+                            <td>Target</td>
+                            <td>
+                                <div id="targetframetime">0</div>
+                            </td>
+                        </tr>
+                        <tr style="color: gray">
+                            <td title="Total ms that was needed but not available for physics and rendering.">Sum time shortage</td>
+                            <td>
+                                <div id="timeshortage">0</div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Player coordinates:</td>
+                <td><div id="player"></div></td>
+            </tr>
+        </table>
+        <label>
+            Display hitbox mesh<input type="checkbox" id="displayType">
+        </label>
 
         <h2>A fun canvas game</h2>
         <p>Controls</p>
@@ -77,17 +82,17 @@
             <tr>
                 <td style="font-weight: bold">Mouse</td>
                 <td style="width: 20px"></td>
-                <td>accelerate in a direction</td>
+                <td>Accelerate in a direction</td>
             </tr>
             <tr>
                 <td style="font-weight: bold">Left click</td>
                 <td style="width: 20px"></td>
-                <td>teleport</td>
+                <td>Teleport</td>
             </tr>
             <tr>
                 <td style="font-weight: bold">Q</td>
                 <td style="width: 20px"></td>
-                <td>shrink</td>
+                <td>Shrink</td>
             </tr>
         </table>
 
