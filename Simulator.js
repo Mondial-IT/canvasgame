@@ -28,7 +28,7 @@ class Simulator {
 
             // If physics didnt take up all the time
             if (new Date().getTime() - this.prevFrameDateTime <= targetFrameTime) {
-                this.requestDraw();
+                this.renderer.draw(this.player, this.scenery, this.hitboxes);
             } else {
                 console.log("No time to draw ", new Date().getTime() - this.prevFrameDateTime, targetFrameTime);
             }
@@ -62,18 +62,6 @@ class Simulator {
 
             this.prevFrameDateTime = new Date().getTime();
             this.physicsFrameCount++;
-        }
-    }
-
-    /**
-     * Determines whether to draw normal or hitbox mode.
-     * Gives Renderer the data for rendering.
-     */
-    requestDraw() {
-        if (document.getElementById("displayType").checked) {
-            this.renderer.drawHitboxes(this.player, this.hitboxes);
-        } else {
-            this.renderer.draw(this.player, this.scenery);
         }
     }
 

@@ -5,119 +5,21 @@ idCounter = 0;
  * Gives every object an id.
  */
 class CanvasObject {
-    constructor(){
+    constructor() {
         this.id = idCounter;
         idCounter++;
+        this.type = "uninitialized";
     }
 }
 
-/**
- * Scenery are stationary objects on the level.
- * Scenery does not do physics themselves, only drawing.
- */
-class Scenery extends CanvasObject {
+class Polygon extends CanvasObject {
 
-    constructor() {
+    constructor(points) {
         super();
+        this.type = "polygon";
+        this.points = points;
     }
 
-    // Draw on ctx (canvas context) by adding offset to your point: 0,0 = offset.x + 0, offset.y + 0
-    draw(ctx, offset) {
-    }
-
-    /**
-     * Returns an array with coordinates {x,y} of the outside edges of the object.
-     */
-    getMesh() {
-        return [];
-    }
-}
-
-class Line extends Scenery {
-
-    draw(ctx, offset) {
-        ctx.beginPath();
-        ctx.moveTo(offset.x + 0, offset.y + 0);
-        ctx.lineTo(offset.x + 200, offset.y + 100);
-        ctx.stroke();
-    }
-}
-
-class Box extends Scenery {
-    draw(ctx, offset) {
-        ctx.beginPath();
-        ctx.moveTo(offset.x + 100, offset.y + 100);
-        ctx.lineTo(offset.x + 200, offset.y + 100);
-        ctx.lineTo(offset.x + 200, offset.y + 200);
-        ctx.lineTo(offset.x + 100, offset.y + 200);
-        ctx.lineTo(offset.x + 100, offset.y + 100);
-        ctx.stroke();
-    }
-}
-
-class Button extends Scenery {
-
-    constructor() {
-        super();
-        this.x = 300;
-        this.y = 100;
-        this.width = 400;
-        this.height = 100;
-    }
-
-    draw(ctx, offset) {
-        ctx.beginPath();
-        ctx.rect(offset.x + this.x, offset.y + this.y, this.width, this.height);
-        ctx.fillStyle = "green";
-        ctx.fill();
-    }
-
-    isAtPos(x, y) {
-        return this.x <= x &&
-            this.x + this.width >= x &&
-            this.y <= y &&
-            this.y + this.height >= y;
-    }
-
-    /**
-     * Returns an array with coordinates {x,y} of the outside edges of the object.
-     * The four loops connect to form a circular drawing motion so all four corners always have a dot.
-     */
-    getMesh() {
-        let mesh = [];
-
-        // Upper horizontal
-        for (let i = 0; i < this.width; i += 20) {
-            mesh.push({
-                x: this.x + i,
-                y: this.y
-            });
-        }
-        // Right vertical
-        for (let j = 0; j < this.height; j += 20) {
-            mesh.push({
-                x: this.x + this.width,
-                y: this.y + j
-            });
-        }
-
-        // Lower horizontal
-        for (let i = this.width; i > 0; i -= 20) {
-            mesh.push({
-                x: this.x + i,
-                y: this.y + this.height
-            });
-        }
-
-        // Left vertical
-        for (let j = this.height; j > 0; j -= 20) {
-            mesh.push({
-                x: this.x,
-                y: this.y + j
-            });
-        }
-        return mesh;
-    }
 }
 
 /**
@@ -128,6 +30,7 @@ class Button extends Scenery {
 class Circle extends CanvasObject {
     constructor() {
         super();
+        this.type = "player";
         this.x = 300;
         this.y = 300;
         this.r = 50;
@@ -224,6 +127,43 @@ class Circle extends CanvasObject {
 }
 
 /**
+ * Returns an array with coordinates {x,y} of the outside edges of the polygon.
+ * @param points Array of connected points {x:0, y:0} forming the polygon of which the hitbox mesh is returned.
+ * @param sampleSpacing The number of coordinated between each hitbox point
+ * @returns {Array} of points forming the hitbox mesh
+ */
+function samplePolygon(points, sampleSpacing) {
+    if(points === null || points.length === 0) return [];
+
+    let mesh = [];
+
+    if (points.length === 1) {
+        mesh.push({
+            x: points[0].x,
+            y: points[0].y
+        });
+    } else {
+        // For each point draw dotted line from previous point to this point
+        for (let i = 1; i < points.length; i++) {
+            // Delta between this point and previous point
+            let dx = points[i].x - points[i-1].x;
+            let dy = points[i].y - points[i-1].y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Sample the line between this point and previous point
+            for (let j = 0; j < dist / sampleSpacing; j++){
+                // Add j times the sampleRate adjusted to the proportion each dimension takes of the total euclidean distance.
+                mesh.push({
+                    x: points[i-1].x + j * sampleSpacing * (dx / dist),
+                    y: points[i-1].y + j * sampleSpacing * (dy / dist)
+                })
+            }
+        }
+    }
+    return mesh;
+}
+
+/**
  * Instantiates all classes in this file.
  * Returns an object with:
  * scenery: an array of scenery objects,
@@ -231,11 +171,23 @@ class Circle extends CanvasObject {
  * hitboxes: an array of scenery hitbox coordinates
  */
 function generateLevel() {
-    let scenery = [new Line(), new Box(), new Button()];
+    let scenery = [
+        new Polygon([
+            {x: 0, y: 0},
+            {x: 200, y: 100},
+        ]),
+        new Polygon([
+            {x: 100, y: 100},
+            {x: 200, y: 100},
+            {x: 200, y: 200},
+            {x: 100, y: 200},
+            {x: 100, y: 100}
+        ])
+    ];
 
     let hitboxes = [];
     for (let i = 0; i < scenery.length; i++) {
-        hitboxes = hitboxes.concat(scenery[i].getMesh());
+        hitboxes = hitboxes.concat(samplePolygon(scenery[i].points, 20));
     }
 
     return {
@@ -244,3 +196,4 @@ function generateLevel() {
         hitboxes: hitboxes
     };
 }
+
