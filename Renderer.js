@@ -36,14 +36,7 @@ class Renderer {
             let x = event.pageX - _this.canvas.offsetLeft;
             let y = event.pageY - _this.canvas.offsetTop;
 
-            // Add displacement vector to player location.
-            // Displacement vector is distance between click location and middle of the screen.
-            _this.simulator.player.x += x - canvasWidth / 2;
-            _this.simulator.player.y += y - canvasHeight / 2;
-
-            // Reset player velocity
-            _this.simulator.player.velocity.x = 0;
-            _this.simulator.player.velocity.y = 0;
+            _this.simulator.jump(x,y);
         });
 
         // Hover event
@@ -113,7 +106,7 @@ class Renderer {
                 this.ctx.stroke();
             }
         }
-        player.draw(this.ctx);
+        Renderer.renderPlayer(this.ctx, player);
     }
 
     /**
@@ -131,6 +124,31 @@ class Renderer {
             }
             ctx.stroke();
         }
+    }
+
+    static renderPlayer(ctx, player){
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255, 255, 255, 0)";
+        ctx.arc(750, 250, player.r, 0, 2 * Math.PI);
+        if (player.hasCollision) {
+            ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        }
+        ctx.stroke();
+        ctx.fill();
+
+        // Restore
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "rgba(255, 255, 255, 0)";
+
+        // If mouse is on canvas (no init values)
+        if (mouseHoverLocation.x !== 0 && mouseHoverLocation.y !== 0) {
+            ctx.beginPath();
+            ctx.moveTo(750, 250);
+            ctx.lineTo(mouseHoverLocation.x, mouseHoverLocation.y);
+            ctx.stroke();
+        }
+        document.getElementById("player").innerHTML = Math.round(player.x) + ',' + Math.round(player.y);
     }
 
     /**

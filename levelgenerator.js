@@ -41,7 +41,10 @@ class Circle extends CanvasObject {
             xmax: 3,
             ymax: 3
         };
-        this.acceleration = 1;
+        this.acceleration = {
+            x: 0,
+            y: 0
+        };
         this.hasCollision = false;
 
         let _this = this; // Bring this into document.addEventListener() scope
@@ -51,77 +54,6 @@ class Circle extends CanvasObject {
         document.addEventListener("keyup", function (event) {
             if (event.keyCode === 81) _this.r = _this.rDefault;
         });
-    }
-
-    draw(ctx) {
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(255, 255, 255, 0)";
-        ctx.arc(750, 250, this.r, 0, 2 * Math.PI);
-        if (this.hasCollision) {
-            ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
-            ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-        }
-        ctx.stroke();
-        ctx.fill();
-
-        // Restore
-        ctx.strokeStyle = "black";
-        ctx.fillStyle = "rgba(255, 255, 255, 0)";
-
-        // If mouse is on canvas (no init values)
-        if (mouseHoverLocation.x !== 0 && mouseHoverLocation.y !== 0) {
-            ctx.beginPath();
-            ctx.moveTo(750, 250);
-            ctx.lineTo(mouseHoverLocation.x, mouseHoverLocation.y);
-            ctx.stroke();
-        }
-    }
-
-    doPhysics() {
-        this.accelerateInDirection(mouseHoverLocation.x, mouseHoverLocation.y);
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        document.getElementById("player").innerHTML = Math.round(this.x) + ',' + Math.round(this.y);
-    }
-
-    // Give circle velocity in the direction of the cursor
-    accelerateInDirection(x, y) {
-        // cursor - middle of screen
-        let dx = x - (canvasWidth / 2);
-        let dy = y - (canvasHeight / 2);
-
-        // Slower/normalize acceleration
-        this.velocity.x += dx / 5000;
-        this.velocity.y += dy / 5000;
-        this.limitVelocity();
-    }
-
-    limitVelocity() {
-        this.velocity.x = Math.max(-this.velocity.xmax, Math.min(this.velocity.xmax, this.velocity.x));
-        this.velocity.y = Math.max(-this.velocity.ymax, Math.min(this.velocity.ymax, this.velocity.y));
-    }
-
-    /**
-     * Checks every point in given meshes array for a collision.
-     * The euclidean distance between every mesh point and the center of the circle
-     * is compared to the radius of the circle.
-     * @param meshes
-     * @returns {boolean}
-     */
-    checkCollision(meshes) {
-        for (let i = 0; i < meshes.length; i++) {
-            if (
-                Math.sqrt(
-                    (meshes[i].x - this.x) * (meshes[i].x - this.x) +
-                    (meshes[i].y - this.y) * (meshes[i].y - this.y)
-                ) <= this.r
-            ) {
-                this.hasCollision = true;
-                return true;
-            }
-        }
-        this.hasCollision = false;
-        return false;
     }
 
 }
