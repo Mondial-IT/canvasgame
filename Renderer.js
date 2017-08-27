@@ -36,17 +36,35 @@ class Renderer {
             let x = event.pageX - _this.canvas.offsetLeft;
             let y = event.pageY - _this.canvas.offsetTop;
 
-            _this.simulator.jump(x,y);
+            console.log('jump');
+
+            //_this.simulator.jump(x,y);
         });
 
         // Hover event
         this.canvas.addEventListener("mousemove", function (event) {
-            mouseHoverLocation = {
+            // Mouse x,y coordinates
+            let mouse = {
                 x: event.pageX - _this.canvas.offsetLeft,
                 y: event.pageY - _this.canvas.offsetTop
-            }
+            };
+
+            // Coordinate relative to center 0:1500,0:500 -> -750:750,-250:250 then normalized -1:1,-1:1
+            let acceleration = {
+                x: (mouse.x - (canvasWidth/2)) / (canvasWidth/2),
+                y: (mouse.y - (canvasHeight/2)) / (canvasHeight/2)
+            };
+
+            // Draw line to cursor
+            mouseHoverLocation = mouse;
+
+            // Send acceleration to server
+            localStorage.setItem(
+                "acceleration",
+                '{"x": ' + acceleration.x + ', "y": ' + acceleration.y + '}'
+            );
         });
-        mouseHoverLocation = {x: canvasWidth / 2, y: canvasHeight / 2};
+        localStorage.setItem("acceleration", '{"x": 0, "y": 0}');
 
 
         document.addEventListener("keydown", function (event) {

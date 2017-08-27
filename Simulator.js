@@ -82,20 +82,24 @@ class Simulator {
         // this.player.velocity.x += dx / 5000;
         // this.player.velocity.y += dy / 5000;
 
+        // Acceleration
+        let acceleration = JSON.parse(localStorage.getItem("acceleration"));
+        acceleration.x = Math.max(-1, Math.min(1, acceleration.x)); // Limit 0:1
+        acceleration.y = Math.max(-1, Math.min(1, acceleration.y)); // Limit 0:1
+        this.player.velocity.x += acceleration.x/7;
+        this.player.velocity.y += acceleration.y/7;
+
+        // Limit velocity
+        this.player.velocity.x = Math.max(-this.player.velocity.xmax, Math.min(this.player.velocity.xmax, this.player.velocity.x));
+        this.player.velocity.y = Math.max(-this.player.velocity.ymax, Math.min(this.player.velocity.ymax, this.player.velocity.y));
 
         // Displacement
         this.player.x += this.player.velocity.x;
         this.player.y += this.player.velocity.y;
 
-        // Acceleration
-        this.player.velocity.x += this.player.acceleration.x;
-        this.player.velocity.y += this.player.acceleration.y;
 
         Simulator.checkCollision(this.player.x, this.player.y, this.player.r, this.hitboxes);
 
-        // Limit velocity
-        this.player.velocity.x = Math.max(-this.player.velocity.xmax, Math.min(this.player.velocity.xmax, this.player.velocity.x));
-        this.player.velocity.y = Math.max(-this.player.velocity.ymax, Math.min(this.player.velocity.ymax, this.player.velocity.y));
 
 
     }
