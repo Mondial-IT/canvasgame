@@ -61,7 +61,7 @@ class Renderer {
         while (true) {
             let frame = JSON.parse(localStorage.getItem("frame"));
             this.incrementFrameCount(frame.frameNr);
-            this.draw(frame.player, frame.scenery, frame.hitboxes);
+            this.draw(frame.player, frame.scenery, frame.hitboxes, frame.border);
             await sleep(1000/60);
         }
     }
@@ -69,19 +69,20 @@ class Renderer {
     /**
      * Call draw() on every canvasObject
      */
-    draw(player, scenery, hitboxes) {
+    draw(player, scenery, hitboxes, border) {
         //this.incrementFrameCount();
         // Wipe canvas
         this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+        // offset = middle of screen - player pos
+        let offset = {
+            x: (canvasWidth / 2) - player.x,
+            y: (canvasHeight / 2) - player.y
+        };
+
         if (!this.displayHitboxes) {
             // Draw normal
             for (let i = 0; i < scenery.length; i++) {
-                // offset = middle of screen - player pos
-                let offset = {
-                    x: (canvasWidth / 2) - player.x,
-                    y: (canvasHeight / 2) - player.y
-                };
                 switch (scenery[i].type) {
                     case "polygon":
                         Renderer.renderPolygon(this.ctx, offset, scenery[i].points);
@@ -106,6 +107,16 @@ class Renderer {
                 );
                 this.ctx.stroke();
             }
+        }
+        console.log(border);
+        if(border !== null) {
+            Renderer.renderPolygon(this.ctx, offset, [
+                {x: border.left, y: border.top},
+                {x: border.right, y: border.top},
+                {x: border.right, y: border.bottom},
+                {x: border.left, y: border.bottom},
+                {x: border.left, y: border.top},
+            ]);
         }
         Renderer.renderPlayer(this.ctx, player);
         Renderer.displayStats();

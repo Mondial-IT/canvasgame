@@ -16,6 +16,7 @@ class Simulator {
         this.prevFrameDateTime = new Date().getTime();
         this.startTime = new Date().getTime();
         this.timeShortageSum = 0; // The sum of ms that was needed for physics and drawing but was not available. (frame skipping)
+        this.border = {left:-500, right:800, top: -250, bottom: 500}
     }
 
     async simulationLoop() {
@@ -29,7 +30,8 @@ class Simulator {
                     frameNr: this.physicsFrameCount,
                     player: this.player,
                     scenery: this.scenery,
-                    hitboxes: this.hitboxes
+                    hitboxes: this.hitboxes,
+                    border: this.border
                 })
             );
 
@@ -117,6 +119,24 @@ class Simulator {
                 console.error("Reading jump from local storage invalid parsing", e);
             }
             localStorage.removeItem("jump");
+        }
+
+        // Limit location within border.
+        if(player.x < this.border.left){
+            player.x = this.border.left;
+            player.velocity.x = 0;
+        }
+        if(player.x > this.border.right){
+            player.x = this.border.right;
+            player.velocity.x = 0;
+        }
+        if(player.y < this.border.top){
+            player.y = this.border.top;
+            player.velocity.y = 0;
+        }
+        if(player.y > this.border.bottom){
+            player.y = this.border.bottom;
+            player.velocity.y = 0;
         }
 
 
