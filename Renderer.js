@@ -1,3 +1,7 @@
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 let mouseHoverLocation = {
     x: 0,
     y: 0
@@ -11,7 +15,6 @@ class Renderer {
 
     constructor() {
         this.frameCount = 0;
-        this.simulator = null;
 
         // Display normal or hitboxes
         this.displayHitboxes = false;
@@ -42,9 +45,25 @@ class Renderer {
         $('#canvas-container').append(this.canvas);
     }
 
-    incrementFrameCount() {
-        document.getElementById("framecounter").innerText = String(this.frameCount);
+    /**
+     * Increment render frame counter.
+     * Write render and physics frame on screen.
+     * @param physicsFrameNr physics frame number
+     */
+    incrementFrameCount(physicsFrameNr) {
+        document.getElementById("renderframe").innerText = String(this.frameCount);
+        document.getElementById("physicsframe").innerText = String(physicsFrameNr);
         this.frameCount++;
+    }
+
+
+    async renderingLoop() {
+        while (true) {
+            let frame = JSON.parse(localStorage.getItem("frame"));
+            this.incrementFrameCount(frame.frameNr);
+            this.draw(frame.player, frame.scenery, frame.hitboxes);
+            await sleep(1000/60);
+        }
     }
 
     /**
@@ -89,6 +108,7 @@ class Renderer {
             }
         }
         Renderer.renderPlayer(this.ctx, player);
+        Renderer.displayStats();
     }
 
     /**
@@ -135,19 +155,16 @@ class Renderer {
 
     /**
      * Writes frame stats onto html.
-     * @param physicsTime
-     * @param renderingTime
-     * @param sleepTime
-     * @param totalTime
-     * @param physicsFrameCount
-     * @param timeShortageSum
      */
-    displayStats(physicsTime, renderingTime, sleepTime, totalTime, physicsFrameCount, timeShortageSum) {
-        document.getElementById("frametimephysics").innerText = String(physicsTime);
-        document.getElementById("frametimerendering").innerText = String(renderingTime);
-        document.getElementById("frametimewaited").innerText = String(sleepTime);
-        document.getElementById("frametime").innerText = String(totalTime);
-        document.getElementById("framecounter").innerText = String(physicsFrameCount);
-        document.getElementById("timeshortage").innerText = String(timeShortageSum);
+    static displayStats() {
+        let stats = JSON.parse(localStorage.getItem("stats"));
+        if (stats !== null) {
+            document.getElementById("frametimephysics").innerText = String(stats.physicsTime);
+            document.getElementById("frametimerendering").innerText = String(stats.renderingTime);
+            document.getElementById("frametimewaited").innerText = String(stats.sleepTime);
+            document.getElementById("frametime").innerText = String(stats.totalTime);
+            document.getElementById("framecounter").innerText = String(stats.physicsFrameCount);
+            document.getElementById("timeshortage").innerText = String(stats.timeShortageSum);
+        }
     }
 }

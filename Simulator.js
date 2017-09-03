@@ -8,7 +8,7 @@ function sleep(ms) {
  * Keeps track of performance.
  */
 class Simulator {
-    constructor(client, player, scenery, hitboxes) {
+    constructor(player, scenery, hitboxes) {
         this.physicsFrameCount = 0;
         this.player = player;
         this.scenery = scenery;
@@ -16,7 +16,6 @@ class Simulator {
         this.prevFrameDateTime = new Date().getTime();
         this.startTime = new Date().getTime();
         this.timeShortageSum = 0; // The sum of ms that was needed for physics and drawing but was not available. (frame skipping)
-        this.clients = [client];
     }
 
     async simulationLoop() {
@@ -25,15 +24,14 @@ class Simulator {
             // Number of ms physics took
             let physicsTime = new Date().getTime() - this.prevFrameDateTime;
 
-            // If physics didnt take up all the time
-            if (physicsTime <= targetFrameTime) {
-                // Send frame to clients
-                for(let i=0; i<this.clients.length; i++){
-                    this.clients[i].draw(this.player, this.scenery, this.hitboxes);
-                }
-            } else {
-                console.log("No time to draw ", physicsTime, targetFrameTime);
-            }
+            localStorage.setItem("frame",
+                JSON.stringify({
+                    frameNr: this.physicsFrameCount,
+                    player: this.player,
+                    scenery: this.scenery,
+                    hitboxes: this.hitboxes
+                })
+            );
 
             // Number of ms physics and rendering took
             let totalUsedTime = new Date().getTime() - this.prevFrameDateTime;
@@ -54,13 +52,16 @@ class Simulator {
 
             // Update frametime counters
             for(let i=0; i<this.clients; i++) {
-                this.clients[i].displayStats(
-                    physicsTime,
-                    renderingTime,
-                    sleepTime,
-                    new Date().getTime() - this.prevFrameDateTime,
-                    this.physicsFrameCount,
-                    this.timeShortageSum
+                localStorage.setItem(
+                    "stats",
+                    JSON.stringify({
+                        physicsTime: physicsTime,
+                        renderingTime: renderingTime,
+                        sleepTime: sleepTime,
+                        totalTime: new Date().getTime() - this.prevFrameDateTime,
+                        physicsFrameCount: this.physicsFrameCount,
+                        timeShortageSum: this.timeShortageSum
+                    })
                 );
             }
 
@@ -72,7 +73,7 @@ class Simulator {
     /**
      * Performs all physics of one simulation cycle.
      */
-    doPhysics() {
+    doPhysics(player) {
 
         // cursor - middle of screen
         // let dx = x - (canvasWidth / 2);
@@ -86,16 +87,16 @@ class Simulator {
         let acceleration = JSON.parse(localStorage.getItem("acceleration"));
         acceleration.x = Math.max(-1, Math.min(1, acceleration.x)); // Limit 0:1
         acceleration.y = Math.max(-1, Math.min(1, acceleration.y)); // Limit 0:1
-        this.player.velocity.x += acceleration.x/7;
-        this.player.velocity.y += acceleration.y/7;
+        player.velocity.x += acceleration.x/7;
+        player.velocity.y += acceleration.y/7;
 
         // Limit velocity
-        this.player.velocity.x = Math.max(-this.player.velocityMax.x, Math.min(this.player.velocityMax.x, this.player.velocity.x));
-        this.player.velocity.y = Math.max(-this.player.velocityMax.y, Math.min(this.player.velocityMax.y, this.player.velocity.y));
+        player.velocity.x = Math.max(-player.velocityMax.x, Math.min(player.velocityMax.x, player.velocity.x));
+        player.velocity.y = Math.max(-player.velocityMax.y, Math.min(player.velocityMax.y, player.velocity.y));
 
         // Displacement
-        this.player.x += this.player.velocity.x;
-        this.player.y += this.player.velocity.y;
+        player.x += player.velocity.x;
+        player.y += player.velocity.y;
 
         // Jump
         let jump = localStorage.getItem("jump");
@@ -103,9 +104,9 @@ class Simulator {
             try {
                 jump = JSON.parse(jump);
                 // todo jump validity check
-                this.player.x += jump.x;
-                this.player.y += jump.y;
-                this.player.velocity = {x:0,y:0};
+                player.x += jump.x;
+                player.y += jump.y;
+                player.velocity = {x:0,y:0};
             } catch (e) {
                 console.error("Reading jump from local storage invalid parsing", e);
             }
@@ -113,7 +114,7 @@ class Simulator {
         }
 
 
-        Simulator.checkCollision(this.player.x, this.player.y, this.player.r, this.hitboxes);
+        Simulator.checkCollision(player.x, player.y, player.r, this.hitboxes);
 
 
 
@@ -164,6 +165,11 @@ class Simulator {
 
     setMousePosition(x,y){
 
+    }
+
+    resetGame(){
+        this.player.x = 0;
+        this.player.y = 0;
     }
 
 }

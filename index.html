@@ -17,61 +17,88 @@
         <div id="canvas-container" style="cursor: default"></div>
         <table>
             <tr>
-                <td>Frame count:</td>
                 <td>
-                    <div id="framecounter">0</div>
-                </td>
-            </tr>
-            <tr>
-                <td style="vertical-align: top">
-                    Frame time (ms):
-                </td>
-                <td>
-                    <table style="border: 1px solid black">
+                    <table>
                         <tr>
-                            <td>Physics</td>
+                            <td>Render frame:</td>
                             <td>
-                                <div id="frametimephysics">0</div>
+                                <div id="renderframe">0</div>
                             </td>
                         </tr>
                         <tr>
-                            <td>Rendering</td>
+                            <td>Physics frame:</td>
                             <td>
-                                <div id="frametimerendering">0</div>
+                                <div id="physicsframe">0</div>
                             </td>
                         </tr>
                         <tr>
-                            <td>Waiting</td>
+                            <td style="vertical-align: top">
+                                Frame time (ms):
+                            </td>
                             <td>
-                                <div id="frametimewaited">0</div>
+                                <table style="border: 1px solid black">
+                                    <tr>
+                                        <td>Physics</td>
+                                        <td>
+                                            <div id="frametimephysics">0</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rendering</td>
+                                        <td>
+                                            <div id="frametimerendering">0</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Waiting</td>
+                                        <td>
+                                            <div id="frametimewaited">0</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td style="border-top: 1px solid black">
+                                            <div id="frametime">0</div>
+                                        </td>
+                                    </tr>
+                                    <tr style="color: gray">
+                                        <td>Target</td>
+                                        <td>
+                                            <div id="targetframetime">0</div>
+                                        </td>
+                                    </tr>
+                                    <tr style="color: gray">
+                                        <td title="Total ms that was needed but not available for physics and rendering.">Sum time shortage</td>
+                                        <td>
+                                            <div id="timeshortage">0</div>
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
                         <tr>
-                            <td>Total</td>
-                            <td style="border-top: 1px solid black">
-                                <div id="frametime">0</div>
-                            </td>
-                        </tr>
-                        <tr style="color: gray">
-                            <td>Target</td>
-                            <td>
-                                <div id="targetframetime">0</div>
-                            </td>
-                        </tr>
-                        <tr style="color: gray">
-                            <td title="Total ms that was needed but not available for physics and rendering.">Sum time shortage</td>
-                            <td>
-                                <div id="timeshortage">0</div>
-                            </td>
+                            <td>Player coordinates:</td>
+                            <td><div id="player"></div></td>
                         </tr>
                     </table>
                 </td>
-            </tr>
-            <tr>
-                <td>Player coordinates:</td>
-                <td><div id="player"></div></td>
+                <td style="width: 50px"></td>
+                <td style="vertical-align: top; border: 1px solid black;">
+                    <div id="tabtype">
+                        This browser tab is a ...
+                        <select id="selecttabtype">
+                            <option value=""></option>
+                            <option value="client">Client</option>
+                            <option value="server">Server</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 20px">Server id: <input type="number" value="1"></div>
+                    <div>Client id: <input type="number" value="1"></div>
+                </td>
+                <td id="tabtypespace"></td>
             </tr>
         </table>
+
 
         <h2>A fun canvas game</h2>
         <p>Controls</p>
@@ -116,5 +143,6 @@
 <script src="server.js"></script>
 <script src="client.js"></script>
 <script src="tijmen.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

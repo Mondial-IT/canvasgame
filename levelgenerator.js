@@ -30,7 +30,7 @@ class Polygon extends CanvasObject {
 class Circle extends CanvasObject {
     constructor() {
         super();
-        this.type = "player";
+        this.id = 1;
         this.x = 300;
         this.y = 300;
         this.r = 50;

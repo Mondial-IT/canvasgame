@@ -56,10 +56,11 @@ function addListeners(canvas) {
     localStorage.setItem("acceleration", '{"x":0,"y":0}');
 }
 
-
-canvasWidth = 1500;
-canvasHeight = 500;
-document.getElementById("targetframetime").innerText = String(targetFrameTime);
-let renderer = new Renderer();
-addListeners(renderer.canvas);
-startServer(renderer);
+function startClient() {
+    canvasWidth = 1500;
+    canvasHeight = 500;
+    document.getElementById("targetframetime").innerText = "?";
+    let renderer = new Renderer();
+    addListeners(renderer.canvas);
+    renderer.renderingLoop();
+}
