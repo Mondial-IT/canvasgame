@@ -30,42 +30,6 @@ class Renderer {
         // Take this scope into the addEventListener callback function scope
         let _this = this;
 
-        // Click event
-        this.canvas.addEventListener("click", function (event) {
-            // Get click location
-            let x = event.pageX - _this.canvas.offsetLeft;
-            let y = event.pageY - _this.canvas.offsetTop;
-
-            console.log('jump');
-
-            //_this.simulator.jump(x,y);
-        });
-
-        // Hover event
-        this.canvas.addEventListener("mousemove", function (event) {
-            // Mouse x,y coordinates
-            let mouse = {
-                x: event.pageX - _this.canvas.offsetLeft,
-                y: event.pageY - _this.canvas.offsetTop
-            };
-
-            // Coordinate relative to center 0:1500,0:500 -> -750:750,-250:250 then normalized -1:1,-1:1
-            let acceleration = {
-                x: (mouse.x - (canvasWidth/2)) / (canvasWidth/2),
-                y: (mouse.y - (canvasHeight/2)) / (canvasHeight/2)
-            };
-
-            // Draw line to cursor
-            mouseHoverLocation = mouse;
-
-            // Send acceleration to server
-            localStorage.setItem(
-                "acceleration",
-                '{"x": ' + acceleration.x + ', "y": ' + acceleration.y + '}'
-            );
-        });
-        localStorage.setItem("acceleration", '{"x": 0, "y": 0}');
-
 
         document.addEventListener("keydown", function (event) {
             if (event.keyCode === 87) _this.displayHitboxes = true;
@@ -91,7 +55,7 @@ class Renderer {
         // Wipe canvas
         this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        if(!this.displayHitboxes){
+        if (!this.displayHitboxes) {
             // Draw normal
             for (let i = 0; i < scenery.length; i++) {
                 // offset = middle of screen - player pos
@@ -134,7 +98,7 @@ class Renderer {
      * @param points Array of points {x:0, y:0} to be drawn.
      */
     static renderPolygon(ctx, offset, points) {
-        if (points !== null && points.length > 0){
+        if (points !== null && points.length > 0) {
             ctx.beginPath();
             ctx.moveTo(offset.x + points[0].x, offset.y + points[0].y);
             for (let i = 1; i < points.length; i++) {
@@ -144,7 +108,7 @@ class Renderer {
         }
     }
 
-    static renderPlayer(ctx, player){
+    static renderPlayer(ctx, player) {
         ctx.beginPath();
         ctx.fillStyle = "rgba(255, 255, 255, 0)";
         ctx.arc(750, 250, player.r, 0, 2 * Math.PI);

@@ -90,12 +90,27 @@ class Simulator {
         this.player.velocity.y += acceleration.y/7;
 
         // Limit velocity
-        this.player.velocity.x = Math.max(-this.player.velocity.xmax, Math.min(this.player.velocity.xmax, this.player.velocity.x));
-        this.player.velocity.y = Math.max(-this.player.velocity.ymax, Math.min(this.player.velocity.ymax, this.player.velocity.y));
+        this.player.velocity.x = Math.max(-this.player.velocityMax.x, Math.min(this.player.velocityMax.x, this.player.velocity.x));
+        this.player.velocity.y = Math.max(-this.player.velocityMax.y, Math.min(this.player.velocityMax.y, this.player.velocity.y));
 
         // Displacement
         this.player.x += this.player.velocity.x;
         this.player.y += this.player.velocity.y;
+
+        // Jump
+        let jump = localStorage.getItem("jump");
+        if(jump !== null){
+            try {
+                jump = JSON.parse(jump);
+                // todo jump validity check
+                this.player.x += jump.x;
+                this.player.y += jump.y;
+                this.player.velocity = {x:0,y:0};
+            } catch (e) {
+                console.error("Reading jump from local storage invalid parsing", e);
+            }
+            localStorage.removeItem("jump");
+        }
 
 
         Simulator.checkCollision(this.player.x, this.player.y, this.player.r, this.hitboxes);

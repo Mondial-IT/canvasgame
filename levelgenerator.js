@@ -35,12 +35,8 @@ class Circle extends CanvasObject {
         this.y = 300;
         this.r = 50;
         this.rDefault = 50;
-        this.velocity = {
-            x: 0,
-            y: 0,
-            xmax: 3,
-            ymax: 3
-        };
+        this.velocity = {x: 0, y: 0};
+        this.velocityMax = {x:3, y:3};
         this.acceleration = {
             x: 0,
             y: 0
