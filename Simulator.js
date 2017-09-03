@@ -84,11 +84,17 @@ class Simulator {
         // this.player.velocity.y += dy / 5000;
 
         // Acceleration
-        let acceleration = JSON.parse(localStorage.getItem("acceleration"));
-        acceleration.x = Math.max(-1, Math.min(1, acceleration.x)); // Limit 0:1
-        acceleration.y = Math.max(-1, Math.min(1, acceleration.y)); // Limit 0:1
-        player.velocity.x += acceleration.x/7;
-        player.velocity.y += acceleration.y/7;
+        try {
+            let acceleration = JSON.parse(localStorage.getItem("acceleration"));
+            acceleration.x = Math.max(-1, Math.min(1, acceleration.x)); // Limit 0:1
+            acceleration.y = Math.max(-1, Math.min(1, acceleration.y)); // Limit 0:1
+            player.velocity.x += acceleration.x/7;
+            player.velocity.y += acceleration.y/7;
+        } catch (e){
+            // Cannot be parsed: reset to continue
+            localStorage.setItem("acceleration", "");
+            console.error("Acceleration from localStorage cannot be parsed");
+        }
 
         // Limit velocity
         player.velocity.x = Math.max(-player.velocityMax.x, Math.min(player.velocityMax.x, player.velocity.x));
@@ -115,9 +121,6 @@ class Simulator {
 
 
         Simulator.checkCollision(player.x, player.y, player.r, this.hitboxes);
-
-
-
     }
 
     /**
@@ -147,10 +150,6 @@ class Simulator {
     }
 
 
-    registerClient(client){
-        this.clients.push(client);
-    }
-
     jump(x,y){
         // todo check validity of x,y
         // Add displacement vector to player location.
@@ -161,10 +160,6 @@ class Simulator {
         // Reset player velocity
         this.player.velocity.x = 0;
         this.player.velocity.y = 0;
-    }
-
-    setMousePosition(x,y){
-
     }
 
     resetGame(){

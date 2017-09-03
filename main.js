@@ -6,10 +6,12 @@ function init(){
     let select = document.getElementById("selecttabtype");
     switch(select.options[select.selectedIndex].value){
         case "client":
+            document.title = "Client";
             document.getElementById("tabtype").innerHTML = '<div>Client</div>';
             startClient();
             break;
         case "server":
+            document.title = "Server";
             document.getElementById("tabtype").innerHTML = '<div>Server</div>';
             startServer();
             break;

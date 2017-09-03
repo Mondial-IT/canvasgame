@@ -1,3 +1,7 @@
+/**
+ * Add event listeners to keys and mouse movements.
+ * @param canvas
+ */
 function addListeners(canvas) {
     // Prevent scrolling with space
     window.addEventListener('keydown', function (e) {
@@ -52,10 +56,19 @@ function addListeners(canvas) {
         );
     });
 
+    // Hover event
+    canvas.addEventListener("mouseleave", function (event) {
+        // Send acceleration to server
+        localStorage.setItem("acceleration",'{"x":0, "y":0}');
+    });
+
     // Default
     localStorage.setItem("acceleration", '{"x":0,"y":0}');
 }
 
+/**
+ * Initializes global valriables, renderer, adds mouse+keyboard listeners and starts rendering loop.
+ */
 function startClient() {
     canvasWidth = 1500;
     canvasHeight = 500;
