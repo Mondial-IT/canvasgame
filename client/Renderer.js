@@ -80,6 +80,7 @@ class Renderer {
             y: (canvasHeight / 2) - player.y
         };
 
+        // Level
         if (!this.displayHitboxes) {
             // Draw normal
             for (let i = 0; i < scenery.length; i++) {
@@ -108,17 +109,20 @@ class Renderer {
                 this.ctx.stroke();
             }
         }
-        console.log(border);
-        if(border !== null) {
-            Renderer.renderPolygon(this.ctx, offset, [
-                {x: border.left, y: border.top},
-                {x: border.right, y: border.top},
-                {x: border.right, y: border.bottom},
-                {x: border.left, y: border.bottom},
-                {x: border.left, y: border.top},
-            ]);
-        }
+
+        // Border
+        Renderer.renderPolygon(this.ctx, offset, [
+            {x: border.left, y: border.top},
+            {x: border.right, y: border.top},
+            {x: border.right, y: border.bottom},
+            {x: border.left, y: border.bottom},
+            {x: border.left, y: border.top},
+        ]);
+
+        // Player
         Renderer.renderPlayer(this.ctx, player);
+
+        // Stats
         Renderer.displayStats();
     }
 
