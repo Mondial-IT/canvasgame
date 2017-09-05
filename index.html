@@ -14,125 +14,28 @@
     </div>
     <div class="ui-content" role="main">
 
-        <div id="canvas-container" style="cursor: default"></div>
-        <table>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td>Render frame:</td>
-                            <td>
-                                <div id="renderframe">0</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Physics frame:</td>
-                            <td>
-                                <div id="physicsframe">0</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="vertical-align: top">
-                                Frame time (ms):
-                            </td>
-                            <td>
-                                <table style="border: 1px solid black">
-                                    <tr>
-                                        <td>Physics</td>
-                                        <td>
-                                            <div id="frametimephysics">0</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Rendering</td>
-                                        <td>
-                                            <div id="frametimerendering">0</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Waiting</td>
-                                        <td>
-                                            <div id="frametimewaited">0</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total</td>
-                                        <td style="border-top: 1px solid black">
-                                            <div id="frametime">0</div>
-                                        </td>
-                                    </tr>
-                                    <tr style="color: gray">
-                                        <td>Target</td>
-                                        <td>
-                                            <div id="targetframetime">0</div>
-                                        </td>
-                                    </tr>
-                                    <tr style="color: gray">
-                                        <td title="Total ms that was needed but not available for physics and rendering.">Sum time shortage</td>
-                                        <td>
-                                            <div id="timeshortage">0</div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Player coordinates:</td>
-                            <td><div id="player"></div></td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="width: 50px"></td>
-                <td style="vertical-align: top; border: 1px solid black;">
-                    <div id="tabtype">
-                        This is a ...
-                        <select id="selecttabtype">
-                            <option value=""></option>
-                            <option value="client">Client</option>
-                            <option value="server">Server</option>
-                        </select>
-                    </div>
-                    <div style="margin-top: 20px">Server id: <input type="number" value="1"></div>
-                    <div>Client id: <input type="number" value="1"></div>
-                </td>
-                <td id="tabtypespace"></td>
-            </tr>
-        </table>
-
-
-        <h2>A fun canvas game</h2>
-        <p>Controls</p>
-        <table>
-            <tr>
-                <td style="font-weight: bold">Mouse</td>
-                <td style="width: 20px"></td>
-                <td>Accelerate in a direction</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold">Left click</td>
-                <td style="width: 20px"></td>
-                <td>Teleport</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold">Q</td>
-                <td style="width: 20px"></td>
-                <td>Shrink</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold">W</td>
-                <td style="width: 20px"></td>
-                <td>Display hitbox mesh</td>
-            </tr>
-        </table>
-
-        <div class="ui-grid-d">
-            <div class="ui-block-a">
-                <a href="#" id="exit-button" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Exit</a>
-            </div>
-            <div class="ui-block-b">
-                <a href="#" id="cancel-button" class="ui-btn ui-shadow ui-corner-all">Cancel</a>
-            </div>
+        <div id="content">
+            <div id="canvas-container" style="cursor: default"></div>
+            <table style="width: 100%">
+                <tr>
+                    <td style="width: 50%; height: 200px; padding-right: 10px">
+                        <button onclick="initClient()" style="height: 100%" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Client</button>
+                    </td>
+                    <td style="width: 50%; height: 200px; padding-left: 10px">
+                        <button onclick="initServer()" style="height: 100%" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Server</button>
+                    </td>
+                </tr>
+            </table>
         </div>
+
+        <!--<div class="ui-grid-d">-->
+            <!--<div class="ui-block-a">-->
+                <!--<a href="#" id="exit-button" class="ui-btn ui-btn-b ui-shadow ui-corner-all">Exit</a>-->
+            <!--</div>-->
+            <!--<div class="ui-block-b">-->
+                <!--<a href="#" id="cancel-button" class="ui-btn ui-shadow ui-corner-all">Cancel</a>-->
+            <!--</div>-->
+        <!--</div>-->
 
     </div>
 </div>
@@ -143,6 +46,6 @@
 <script src="client/Renderer.js"></script>
 <script src="client/client.js"></script>
 <script src="tijmen.js"></script>
-<script src="main.js"></script>
+<script src="index.js"></script>
 </body>
 </html>
