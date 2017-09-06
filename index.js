@@ -1,6 +1,7 @@
 
 function htmlClient(){
     document.getElementById("content").innerHTML = `
+        <div id="canvas-container" style="cursor: default"></div>
         <table style="width: 100%">
             <tr>
                 <td style="width: 30%">

@@ -140,7 +140,7 @@ class Simulator {
         }
 
 
-        Simulator.checkCollision(player.x, player.y, player.r, this.hitboxes);
+        this.player.hasCollision = Simulator.checkCollision(player.x, player.y, player.r, this.hitboxes);
     }
 
     /**
@@ -161,11 +161,9 @@ class Simulator {
                     (hitboxes[i].y - y) * (hitboxes[i].y - y)
                 ) <= r
             ) {
-                this.hasCollision = true;
                 return true;
             }
         }
-        this.hasCollision = false;
         return false;
     }
 
