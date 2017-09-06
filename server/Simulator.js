@@ -8,22 +8,22 @@ function sleep(ms) {
  * Keeps track of performance.
  */
 class Simulator {
-    constructor(player, scenery, hitboxes) {
+    constructor(level) {
         this.physicsFrameCount = 0;
-        this.player = player;
-        this.scenery = scenery;
-        this.hitboxes = hitboxes;
+        this.newLevel(level);
         this.prevFrameDateTime = new Date().getTime();
-        this.startTime = new Date().getTime();
-        this.timeShortageSum = 0; // The sum of ms that was needed for physics and drawing but was not available. (frame skipping)
-        this.border = {left:-500, right:800, top: -250, bottom: 500}
+        this.border = {left:-1000, right:1000, top: -1000, bottom: 1000};
+    }
+
+    newLevel(level){
+        this.player = level.player;
+        this.scenery = level.scenery;
+        this.hitboxes = level.hitboxes;
     }
 
     async simulationLoop() {
         while (true) {
             this.doPhysics(this.player);
-            // Number of ms physics took
-            let physicsTime = new Date().getTime() - this.prevFrameDateTime;
 
             localStorage.setItem("frame",
                 JSON.stringify({
@@ -38,33 +38,13 @@ class Simulator {
             // Number of ms physics and rendering took
             let totalUsedTime = new Date().getTime() - this.prevFrameDateTime;
 
-            // Number of ms rendering took
-            let renderingTime = totalUsedTime - physicsTime;
-
             // If there is time left over: wait
             let sleepTime = 0;
             if (totalUsedTime < targetFrameTime) {
                 sleepTime = targetFrameTime - totalUsedTime;
                 await sleep(sleepTime);
             } else {
-                // Register the time shortage
-                this.timeShortageSum += totalUsedTime - targetFrameTime;
-                console.log("Frame too longer than targetFrameTime");
-            }
-
-            // Update frametime counters
-            for(let i=0; i<this.clients; i++) {
-                localStorage.setItem(
-                    "stats",
-                    JSON.stringify({
-                        physicsTime: physicsTime,
-                        renderingTime: renderingTime,
-                        sleepTime: sleepTime,
-                        totalTime: new Date().getTime() - this.prevFrameDateTime,
-                        physicsFrameCount: this.physicsFrameCount,
-                        timeShortageSum: this.timeShortageSum
-                    })
-                );
+                console.error("Frame too longer than targetFrameTime");
             }
 
             this.prevFrameDateTime = new Date().getTime();
@@ -77,13 +57,12 @@ class Simulator {
      */
     doPhysics(player) {
 
-        // cursor - middle of screen
-        // let dx = x - (canvasWidth / 2);
-        // let dy = y - (canvasHeight / 2);
-
-        // Slower/normalize acceleration
-        // this.player.velocity.x += dx / 5000;
-        // this.player.velocity.y += dy / 5000;
+        // Shrinking
+        if(localStorage.getItem("shrink") === "true"){
+            player.r = player.rShrunk;
+        } else {
+            player.r = player.rDefault;
+        }
 
         // Acceleration
         try {
@@ -92,6 +71,9 @@ class Simulator {
             acceleration.y = Math.max(-1, Math.min(1, acceleration.y)); // Limit 0:1
             player.velocity.x += acceleration.x/7;
             player.velocity.y += acceleration.y/7;
+
+            player.velocity.x *= player.drag;
+            player.velocity.y *= player.drag;
         } catch (e){
             // Cannot be parsed: reset to continue
             localStorage.setItem("acceleration", "");
@@ -119,6 +101,12 @@ class Simulator {
                 console.error("Reading jump from local storage invalid parsing", e);
             }
             localStorage.removeItem("jump");
+        }
+
+        if(localStorage.getItem("resetplayer") === "true"){
+            this.player.x = 0;
+            this.player.y = 0;
+            localStorage.setItem("resetplayer","false");
         }
 
         // Limit location within border.

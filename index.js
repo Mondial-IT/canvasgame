@@ -111,6 +111,10 @@ function htmlServer(){
     document.getElementById("content").innerHTML = `
         <div>Server running!</div>
         <button onclick="resetGame()">Reset game</button>
+        <select id="levelselect">
+            <option value="level1">Level 1</option>
+            <option value="level2">Level 2</option>
+        </select>
     `;
 }
 
@@ -123,5 +127,23 @@ function initClient(){
 function initServer(){
     document.title = "Server";
     htmlServer();
-    startServer();
+
+
+    document.getElementById("levelselect").addEventListener("change", function(){
+        console.log('change level');
+        let select = document.getElementById("levelselect");
+        switch(select.options[select.selectedIndex].value){
+            case "level1":
+                simulator.newLevel(level1());
+                break;
+            case "level2":
+                simulator.newLevel(level2());
+                break;
+            default:
+                console.error("levelselect dropdown not recognized");
+                break;
+        }
+    });
+
+    startServer(level1());
 }

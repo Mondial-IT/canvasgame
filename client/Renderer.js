@@ -121,9 +121,6 @@ class Renderer {
 
         // Player
         Renderer.renderPlayer(this.ctx, player);
-
-        // Stats
-        Renderer.displayStats();
     }
 
     /**
@@ -166,20 +163,5 @@ class Renderer {
             ctx.stroke();
         }
         document.getElementById("player").innerHTML = Math.round(player.x) + ',' + Math.round(player.y);
-    }
-
-    /**
-     * Writes frame stats onto html.
-     */
-    static displayStats() {
-        let stats = JSON.parse(localStorage.getItem("stats"));
-        if (stats !== null) {
-            document.getElementById("frametimephysics").innerText = String(stats.physicsTime);
-            document.getElementById("frametimerendering").innerText = String(stats.renderingTime);
-            document.getElementById("frametimewaited").innerText = String(stats.sleepTime);
-            document.getElementById("frametime").innerText = String(stats.totalTime);
-            document.getElementById("framecounter").innerText = String(stats.physicsFrameCount);
-            document.getElementById("timeshortage").innerText = String(stats.timeShortageSum);
-        }
     }
 }

@@ -58,16 +58,39 @@ function addListeners(canvas) {
 
     // Hover event
     canvas.addEventListener("mouseleave", function (event) {
-        // Send acceleration to server
+        mouseHoverLocation = {x:canvasWidth/2,y:canvasHeight/2};
         localStorage.setItem("acceleration",'{"x":0, "y":0}');
     });
 
     // Default
     localStorage.setItem("acceleration", '{"x":0,"y":0}');
+
+
+    // Reset
+    document.addEventListener("keydown", function (event) {
+        switch(event.keyCode){
+            case 90: // z reset
+                console.log("reset player");
+                localStorage.setItem("resetplayer","true");
+                break;
+            case 81: // q shrink
+                console.log("shrink");
+                localStorage.setItem("shrink", "true");
+                break;
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        switch(event.keyCode){
+            case 81: // q shrink
+                localStorage.setItem("shrink", "false");
+                break;
+        }
+    });
 }
 
 /**
- * Initializes global valriables, renderer, adds mouse+keyboard listeners and starts rendering loop.
+ * Initializes global variables, renderer, adds mouse+keyboard listeners and starts rendering loop.
  */
 function startClient() {
     canvasWidth = 1500;

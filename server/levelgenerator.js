@@ -30,17 +30,18 @@ class Polygon extends CanvasObject {
 class Circle extends CanvasObject {
     constructor() {
         super();
-        this.id = 1;
-        this.x = 300;
-        this.y = 300;
+        this.x = 0;
+        this.y = 0;
         this.r = 50;
         this.rDefault = 50;
+        this.rShrunk = 10;
         this.velocity = {x: 0, y: 0};
         this.velocityMax = {x:3, y:3};
         this.acceleration = {
             x: 0,
             y: 0
         };
+        this.drag = 0.98; // Permanent deceleration
         this.hasCollision = false;
 
         let _this = this; // Bring this into document.addEventListener() scope
@@ -91,6 +92,20 @@ function samplePolygon(points, sampleSpacing) {
     return mesh;
 }
 
+
+/**
+ * Converts from scenery to hitboxes by sampling along the lines, using samplePolygon().
+ * @param scenery
+ * @returns {Array}
+ */
+function convertHitboxes(scenery){
+    let hitboxes = [];
+    for (let i = 0; i < scenery.length; i++) {
+        hitboxes = hitboxes.concat(samplePolygon(scenery[i].points, 20));
+    }
+    return hitboxes;
+}
+
 /**
  * Instantiates all classes in this file.
  * Returns an object with:
@@ -98,7 +113,7 @@ function samplePolygon(points, sampleSpacing) {
  * player: the player
  * hitboxes: an array of scenery hitbox coordinates
  */
-function generateLevel() {
+function level1() {
     let scenery = [
         new Polygon([
             {x: 0, y: 0},
@@ -113,15 +128,36 @@ function generateLevel() {
         ])
     ];
 
-    let hitboxes = [];
-    for (let i = 0; i < scenery.length; i++) {
-        hitboxes = hitboxes.concat(samplePolygon(scenery[i].points, 20));
-    }
+    return {
+        scenery: scenery,
+        player: new Circle(),
+        hitboxes: convertHitboxes(scenery)
+    };
+}
+
+function level2() {
+    let scenery = [
+        // Left line
+        new Polygon([
+            {x: -50, y: 100},
+            {x: -50, y: 400},
+            {x: 650, y: 400},
+            {x: 650, y: 100}
+        ]),
+        // Right line
+        new Polygon([
+            {x: 100, y: 100},
+            {x: 100, y: 250},
+            {x: 500, y: 250},
+            {x: 500, y: 100}
+        ])
+    ];
 
     return {
         scenery: scenery,
         player: new Circle(),
-        hitboxes: hitboxes
+        hitboxes: convertHitboxes(scenery)
     };
 }
+
 
